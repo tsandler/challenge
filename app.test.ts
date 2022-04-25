@@ -88,25 +88,32 @@ describe('Shipments tests', () => {
         }
         const res = await request(app).post("/shipment").send(body)
         const record: Shipment | null = await shipmentManager.getShipmentByReferenceId(referenceId)
-        const expectedNodes = nodes.map((node: Node) => node.normalizeUnits())
+        const node1: Node = record?.transportPacks.nodes[0]
+        const node2: Node = record?.transportPacks.nodes[1]
+        const node3: Node = record?.transportPacks.nodes[2]
 
         expect(res.statusCode).toBe(200);
         expect(record?.referenceId).toBe(referenceId)
         expect(record?.organizations).toStrictEqual(organizations)
         expect(record?.estimatedTimeArrival).toBe(estimatedTimeArrival)
-        expect(record?.transportPacks.nodes).toEqual(expectedNodes)
+        expect(node1.totalWeight.unit).toBe("KILOGRAMS")
+        expect(node1.totalWeight.weight).toBe(2)
+        expect(node2.totalWeight.unit).toBe("KILOGRAMS")
+        expect(node2.totalWeight.weight).toBe(0.0283495)
+        expect(node3.totalWeight.unit).toBe("KILOGRAMS")
+        expect(node3.totalWeight.weight).toBe(0.453592)
     })
 
     test('TotalWeight is returned successfully for KILOGRAMS',  async () => {
-        await checkTotalWeightForUnit("KILOGRAMS", 4)
+        await checkTotalWeightForUnit("KILOGRAMS", 3.4819415)
     })
 
     test('TotalWeight is returned successfully for OUNCES',  async () => {
-        await checkTotalWeightForUnit("OUNCES", 141.096)
+        await checkTotalWeightForUnit("OUNCES", 106.30394150000001)
     })
 
     test('TotalWeight is returned successfully for POUNDS',  async () => {
-        await checkTotalWeightForUnit("POUNDS", 8.81848)
+        await checkTotalWeightForUnit("POUNDS", 7.0958015)
     })
 })
 
@@ -178,10 +185,16 @@ const createDemoNodes = () => {
     node1.totalWeight = totalWeight1
 
     const totalWeight2: TotalWeight = new TotalWeight()
-    totalWeight2.unit = "KILOGRAMS"
+    totalWeight2.unit = "OUNCES"
     totalWeight2.weight = 1
     const node2: Node = new Node
     node2.totalWeight = totalWeight2
 
-    return [node1, node2]
+    const totalWeight3: TotalWeight = new TotalWeight()
+    totalWeight3.unit = "POUNDS"
+    totalWeight3.weight = 1
+    const node3: Node = new Node
+    node3.totalWeight = totalWeight3
+
+    return [node1, node2, node3]
 }

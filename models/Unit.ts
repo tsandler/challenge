@@ -16,7 +16,7 @@ export class Kilograms implements Unit{
 
 export class Ounces implements Unit{
     convert(value: number, units: string): number {
-        return value * 0.0625
+        return value * 0.0283495
     }
 }
 
