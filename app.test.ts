@@ -109,11 +109,11 @@ describe('Shipments tests', () => {
     })
 
     test('TotalWeight is returned successfully for OUNCES',  async () => {
-        await checkTotalWeightForUnit("OUNCES", 106.30394150000001)
+        await checkTotalWeightForUnit("OUNCES", 122.82200447100001)
     })
 
     test('TotalWeight is returned successfully for POUNDS',  async () => {
-        await checkTotalWeightForUnit("POUNDS", 7.0958015)
+        await checkTotalWeightForUnit("POUNDS", 7.6763578697299995)
     })
 })
 
@@ -166,7 +166,7 @@ const createDemoShipments = async () => {
 
 const createDemoShipment = async (referenceId: string, organizations: string[], estimatedTimeArrival: string, nodes: Node[]) => {
     const transportPacks: TransportPack = new TransportPack()
-    transportPacks.nodes = nodes
+    transportPacks.nodes = nodes.map((node: Node) => node.normalizeUnits())
 
     const shipment: Shipment = new Shipment()
     shipment.referenceId = referenceId
